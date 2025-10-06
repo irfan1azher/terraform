@@ -17,16 +17,19 @@ jobs:
     steps:
       - run: echo "This is a test step"
 
-  integration:
+  terrascan:
     runs-on: ubuntu-22.04
-    needs: test
     steps:
-      - run: echo "This is an integration step"
-      - run: exit 1
-        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  prod:
-    runs-on: ubuntu-22.04
-    needs: integration
-    steps:
-      - run: echo "This is a deploy step"
+      - name: Run Terrascan
+        id: terrascan
+        uses: tenable/terrascan-action@v1
+        with:
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'aws'
+          only_warn: true
+          iac_dir: 'aws'
+ 
